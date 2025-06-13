@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const livroController = require('../controllers/livroController');
+const livroController = require('../controller/livroController');
 const { autenticar, verificarPerfil } = require('../middleware/authMiddleware');
 
 router.get('/', livroController.listarLivros);

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const emprestimoController = require('../controllers/emprestimoController');
+const emprestimoController = require('../controller/emprestimoController');
 const { autenticar, verificarPerfil } = require('../middleware/authMiddleware');
 
 router.post('/', autenticar, verificarPerfil(['leitor']), emprestimoController.criarEmprestimo);

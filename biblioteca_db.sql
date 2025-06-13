@@ -1,6 +1,7 @@
 CREATE DATABASE biblioteca;
 USE biblioteca;
 
+drop DATABASE biblioteca;
 CREATE TABLE usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
