@@ -112,8 +112,6 @@ async function removerLivro(id) {
     alert(err.message);
   }
 }
-
-// Suas funções existentes para empréstimos, mantidas conforme seu código original:
 async function carregarEmprestimos() {
   const token = localStorage.getItem("token");
 

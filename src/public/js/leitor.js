@@ -5,10 +5,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function carregarLivros() {
   const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Você precisa fazer login.");
+    return;
+  }
 
   const res = await fetch("/api/livros", {
     headers: { Authorization: `Bearer ${token}` }
   });
+
+  if (!res.ok) {
+    const erro = await res.json();
+    alert(`Erro ao carregar livros: ${erro.mensagem}`);
+    return;
+  }
 
   const livros = await res.json();
   const lista = document.getElementById("lista-livros");
@@ -30,6 +40,11 @@ async function carregarLivros() {
 
 async function solicitarEmprestimo(livro_id) {
   const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Você precisa fazer login para solicitar empréstimos.");
+    return;
+  }
+
   const data = prompt("Data prevista para devolução (AAAA-MM-DD):");
   if (!data) return;
 
@@ -44,16 +59,30 @@ async function solicitarEmprestimo(livro_id) {
 
   const json = await res.json();
   alert(json.mensagem);
-  carregarLivros(); // Atualiza lista de livros após empréstimo
-  carregarEmprestimos(); // Atualiza lista de empréstimos
+
+  if (res.ok) {
+    carregarLivros();
+    carregarEmprestimos();
+  }
 }
 
 async function carregarEmprestimos() {
   const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Você precisa fazer login para ver seus empréstimos.");
+    return;
+  }
 
-  const res = await fetch("/api/leitor/meus", {
+  // CORREÇÃO AQUI: rota correta para listar os empréstimos do leitor
+  const res = await fetch("/api/emprestimos/meus", {
     headers: { Authorization: `Bearer ${token}` }
   });
+
+  if (!res.ok) {
+    const erro = await res.json();
+    alert(`Erro ao carregar seus empréstimos: ${erro.mensagem}`);
+    return;
+  }
 
   const emprestimos = await res.json();
   const lista = document.getElementById("lista-emprestimos");
