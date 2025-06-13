@@ -1,11 +1,15 @@
 const db = require('../models/db');
 
-exports.listarLivros = (req, res) => {
-  db.query('SELECT * FROM livros', (err, results) => {
-    if (err) return res.status(500).json({ mensagem: 'Erro ao listar livros' });
-    res.json(results);
-  });
+exports.listarLivros = async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM livros');
+    res.status(200).json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensagem: 'Erro ao buscar livros' });
+  }
 };
+
 
 exports.adicionarLivro = (req, res) => {
   const { titulo, autor, ano_publicacao, quantidade_disponivel } = req.body;

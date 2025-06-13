@@ -6,10 +6,25 @@
   <title>Livros</title>
 </head>
 <body>
-  <header><h2>Livros Disponíveis</h2></header>
-  <div class="container" id="lista-livros">
-    <!-- Lista de livros será carregada via JS -->
-  </div>
+  <header><h2>Gerenciamento de Livros</h2></header>
+
+  <section>
+    <h3>Adicionar / Atualizar Livro</h3>
+    <form id="livroForm">
+      <input type="hidden" id="livroId" />
+      <input type="text" id="titulo" placeholder="Título" required />
+      <input type="text" id="autor" placeholder="Autor" required />
+      <input type="number" id="ano_publicacao" placeholder="Ano de Publicação" />
+      <input type="number" id="quantidade_disponivel" placeholder="Quantidade Disponível" required />
+      <button type="submit">Salvar Livro</button>
+    </form>
+  </section>
+
+  <section>
+    <h3>Lista de Livros</h3>
+    <button onclick="listarLivros()">Atualizar Lista</button>
+    <div id="lista-livros"></div>
+  </section>
 
   <script src="./js/livros.js"></script>
 </body>
