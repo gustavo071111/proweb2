@@ -8,7 +8,6 @@ exports.criarEmprestimo = (req, res) => {
     return res.status(400).json({ mensagem: 'Campos obrigatórios faltando' });
   }
 
-  // Verificar disponibilidade
   db.query('SELECT quantidade_disponivel FROM livros WHERE id = ?', [livro_id], (err, results) => {
     if (err) return res.status(500).json({ mensagem: 'Erro no banco' });
     if (results.length === 0) return res.status(404).json({ mensagem: 'Livro não encontrado' });
@@ -99,7 +98,6 @@ exports.marcarDevolucao = (req, res) => {
   const { id } = req.params;
   const data_devolucao_real = new Date().toISOString().slice(0, 10);
 
-  // Atualizar status do empréstimo e quantidade disponível do livro
   db.query('SELECT livro_id, status FROM emprestimos WHERE id = ?', [id], (err, results) => {
     if (err) return res.status(500).json({ mensagem: 'Erro no banco' });
     if (results.length === 0) return res.status(404).json({ mensagem: 'Empréstimo não encontrado' });

@@ -3,11 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" href="./css/style.css" />
-  <title>Livros</title>
+  <title>Bibliotecário</title>
 </head>
 <body>
-  <header><h2>Gerenciamento de Livros</h2></header>
+  <header>
+    <h2>Painel do Bibliotecário</h2>
+  </header>
 
+  <!-- LIVROS -->
   <section>
     <h3>Adicionar / Atualizar Livro</h3>
     <form id="livroForm">
@@ -26,6 +29,13 @@
     <div id="lista-livros"></div>
   </section>
 
-  <script src="./js/livros.js"></script>
+  <!-- EMPRÉSTIMOS -->
+  <section>
+    <h3>Empréstimos Ativos</h3>
+    <button id="btn-buscar">Buscar Empréstimos</button>
+    <div id="painel-emprestimos" class="container"></div>
+  </section>
+
+  <script src="./js/bibliotecario.js"></script>
 </body>
 </html>

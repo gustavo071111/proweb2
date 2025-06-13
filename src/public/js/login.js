@@ -11,15 +11,15 @@ async function login() {
   });
 
   const data = await res.json();
+  console.log("Resposta da API:", data);
 
   if (res.ok) {
     localStorage.setItem("token", data.token);
 
-    // Redireciona com base no tipo de usuário
     if (data.perfil === "bibliotecario") {
-      window.location.href = "painel.html";
+      window.location.href = "bibliotecario.html";
     } else {
-      window.location.href = "livros.html";
+      window.location.href = "leitor.html";
     }
   } else {
     alert("Erro: " + data.mensagem);
