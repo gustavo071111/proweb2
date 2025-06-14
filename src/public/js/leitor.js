@@ -73,7 +73,6 @@ async function carregarEmprestimos() {
     return;
   }
 
-  // CORREÇÃO AQUI: rota correta para listar os empréstimos do leitor
   const res = await fetch("/api/emprestimos/meus", {
     headers: { Authorization: `Bearer ${token}` }
   });
