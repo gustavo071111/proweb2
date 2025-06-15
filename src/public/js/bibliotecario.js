@@ -150,13 +150,24 @@ async function carregarEmprestimos() {
 }
 
 async function marcarDevolucao(id) {
+  console.log("ID:", id);
+
   const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Você precisa estar logado.");
+    return;
+  }
+  if (!id) {
+    alert("ID do empréstimo inválido");
+    return;
+  }
 
   try {
     const res = await fetch(`/api/emprestimos/${id}/devolver`, {
-      method: "PATCH",
+      method: "put",
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("Resposta do fetch:", res);
 
     if (!res.ok) throw new Error("Erro ao marcar devolução");
 
@@ -166,3 +177,4 @@ async function marcarDevolucao(id) {
     console.error(err);
   }
 }
+

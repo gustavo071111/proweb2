@@ -94,21 +94,27 @@ exports.meusEmprestimos = (req, res) => {
   });
 };
 
-
 exports.marcarDevolucao = (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params; // id do empréstimo vindo da URL
   const data_devolucao_real = new Date().toISOString().slice(0, 10);
 
+  // Primeiro, buscar o empréstimo para garantir que existe e está ativo
   db.query('SELECT livro_id, status FROM emprestimos WHERE id = ?', [id], (err, results) => {
     if (err) {
       console.error("Erro ao buscar empréstimo:", err);
       return res.status(500).json({ mensagem: 'Erro no banco' });
     }
-    if (results.length === 0) return res.status(404).json({ mensagem: 'Empréstimo não encontrado' });
-    if (results[0].status !== 'ativo') return res.status(400).json({ mensagem: 'Empréstimo já finalizado' });
+    if (results.length === 0) {
+      return res.status(404).json({ mensagem: 'Empréstimo não encontrado' });
+    }
+
+    if (results[0].status !== 'ativo') {
+      return res.status(400).json({ mensagem: 'Empréstimo já finalizado' });
+    }
 
     const livro_id = results[0].livro_id;
 
+    // Atualizar o status para 'finalizado' e data da devolução real
     db.query(
       'UPDATE emprestimos SET status = ?, data_devolucao_real = ? WHERE id = ?',
       ['finalizado', data_devolucao_real, id],
@@ -118,6 +124,7 @@ exports.marcarDevolucao = (req, res) => {
           return res.status(500).json({ mensagem: 'Erro ao atualizar empréstimo' });
         }
 
+        // Opcional: atualizar estoque do livro (incrementar quantidade_disponivel)
         db.query(
           'UPDATE livros SET quantidade_disponivel = quantidade_disponivel + 1 WHERE id = ?',
           [livro_id],
@@ -126,7 +133,8 @@ exports.marcarDevolucao = (req, res) => {
               console.error("Erro ao atualizar estoque:", err3);
               return res.status(500).json({ mensagem: 'Erro ao atualizar estoque' });
             }
-            res.json({ mensagem: 'Devolução registrada com sucesso' });
+
+            res.json({ mensagem: 'Devolução registrada e status atualizado para finalizado com sucesso' });
           }
         );
       }

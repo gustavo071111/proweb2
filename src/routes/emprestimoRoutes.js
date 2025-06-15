@@ -13,7 +13,7 @@ router.get("/meus", autenticar, verificarPerfil(["leitor"]), emprestimoControlle
 // Leitor pode criar empréstimos
 router.post("/", autenticar, verificarPerfil(["leitor"]), emprestimoController.criarEmprestimo);
 
-// Bibliotecário marca devolução
-router.put("/:id/devolver", autenticar, verificarPerfil(["bibliotecario"]), emprestimoController.marcarDevolucao);
+// Bibliotecário ou Leitor pode marcar devolução
+router.put("/:id/devolver", autenticar, verificarPerfil(["bibliotecario", "leitor"]), emprestimoController.marcarDevolucao);
 
 module.exports = router;

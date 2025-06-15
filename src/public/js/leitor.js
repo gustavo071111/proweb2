@@ -84,19 +84,75 @@ async function carregarEmprestimos() {
   }
 
   const emprestimos = await res.json();
-  const lista = document.getElementById("lista-emprestimos");
-  lista.innerHTML = "";
+  const painel = document.getElementById("lista-emprestimos");
+  painel.innerHTML = "";
 
   emprestimos.forEach(emp => {
     const div = document.createElement("div");
+    div.classList.add("emprestimo-item");
+
+    // Conteúdo do empréstimo
     div.innerHTML = `
       <h4>${emp.titulo}</h4>
-      <p>Data Empréstimo: ${new Date(emp.data_emprestimo).toLocaleDateString()}</p>
-      <p>Prevista: ${new Date(emp.data_devolucao_prevista).toLocaleDateString()}</p>
-      <p>Devolução Real: ${emp.data_devolucao_real ? new Date(emp.data_devolucao_real).toLocaleDateString() : '---'}</p>
-      <p>Status: ${emp.status}</p>
-      <hr>
+      <p><strong>Data Empréstimo:</strong> ${new Date(emp.data_emprestimo).toLocaleDateString()}</p>
+      <p><strong>Prevista:</strong> ${new Date(emp.data_devolucao_prevista).toLocaleDateString()}</p>
+      <p><strong>Devolução Real:</strong> ${emp.data_devolucao_real ? new Date(emp.data_devolucao_real).toLocaleDateString() : '---'}</p>
+      <p><strong>Status:</strong> ${emp.status}</p>
     `;
-    lista.appendChild(div);
+
+    // Botão "Devolver" se ainda estiver ativo
+    if (emp.status === "ativo") {
+      const btnDevolver = document.createElement("button");
+      btnDevolver.textContent = "📤 Devolver";
+      btnDevolver.onclick = () => devolverEmprestimo(emp.id);
+      btnDevolver.classList.add("btn-devolver");
+      div.appendChild(btnDevolver);
+    }
+
+    // Separador visual
+    const hr = document.createElement("hr");
+    div.appendChild(hr);
+
+    painel.appendChild(div);
   });
+  
+}
+
+async function marcarDevolucao(emprestimo_id) {
+  if (!emprestimo_id) {
+    console.error("ID do empréstimo não informado");
+    return;
+  }
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Você precisa estar logado.");
+    return;
+  }
+
+  const confirmar = confirm("Deseja realmente devolver este livro?");
+  if (!confirmar) return;
+
+  try {
+    const res = await fetch(`/api/emprestimos/${emprestimo_id}/devolver`, {
+      method: "PUT", // mais comum usar PUT para atualizar
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!res.ok) {
+      const erroJson = await res.json();
+      alert(erroJson.mensagem || "Erro ao marcar devolução");
+      return;
+    }
+
+    const json = await res.json();
+    alert(json.mensagem);
+    carregarEmprestimos();
+  } catch (err) {
+    alert("Erro na devolução.");
+    console.error(err);
+  }
 }
