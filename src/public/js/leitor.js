@@ -91,7 +91,6 @@ async function carregarEmprestimos() {
     const div = document.createElement("div");
     div.classList.add("emprestimo-item");
 
-    // Conteúdo do empréstimo
     div.innerHTML = `
       <h4>${emp.titulo}</h4>
       <p><strong>Data Empréstimo:</strong> ${new Date(emp.data_emprestimo).toLocaleDateString()}</p>
@@ -100,22 +99,17 @@ async function carregarEmprestimos() {
       <p><strong>Status:</strong> ${emp.status}</p>
     `;
 
-    // Botão "Devolver" se ainda estiver ativo
     if (emp.status === "ativo") {
       const btnDevolver = document.createElement("button");
       btnDevolver.textContent = "📤 Devolver";
-      btnDevolver.onclick = () => devolverEmprestimo(emp.id);
+      btnDevolver.onclick = () => marcarDevolucao(emp.id); // <-- ALTERAÇÃO AQUI
       btnDevolver.classList.add("btn-devolver");
       div.appendChild(btnDevolver);
     }
 
-    // Separador visual
-    const hr = document.createElement("hr");
-    div.appendChild(hr);
-
+    div.appendChild(document.createElement("hr"));
     painel.appendChild(div);
   });
-  
 }
 
 async function marcarDevolucao(emprestimo_id) {
@@ -135,20 +129,20 @@ async function marcarDevolucao(emprestimo_id) {
 
   try {
     const res = await fetch(`/api/emprestimos/${emprestimo_id}/devolver`, {
-      method: "PUT", // mais comum usar PUT para atualizar
+      method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json"
       }
     });
 
+    const json = await res.json();
+
     if (!res.ok) {
-      const erroJson = await res.json();
-      alert(erroJson.mensagem || "Erro ao marcar devolução");
+      alert(json.mensagem || "Erro ao marcar devolução");
       return;
     }
 
-    const json = await res.json();
     alert(json.mensagem);
     carregarEmprestimos();
   } catch (err) {
