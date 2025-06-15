@@ -112,6 +112,7 @@ async function removerLivro(id) {
     alert(err.message);
   }
 }
+
 async function carregarEmprestimos() {
   const token = localStorage.getItem("token");
 
@@ -130,7 +131,7 @@ async function carregarEmprestimos() {
       const div = document.createElement("div");
       div.classList.add("emprestimo-card");
       div.innerHTML = `
-        <h4>${emp.titulo} - ${emp.leitor}</h4>
+        <h4>${emp.titulo} - ${emp.nome_leitor}</h4>
         <p><strong>Data Empréstimo:</strong> ${new Date(emp.data_emprestimo).toLocaleDateString()}</p>
         <p><strong>Devolução Prevista:</strong> ${new Date(emp.data_devolucao_prevista).toLocaleDateString()}</p>
         <p><strong>Status:</strong> ${emp.status}</p>
@@ -164,17 +165,17 @@ async function marcarDevolucao(id) {
 
   try {
     const res = await fetch(`/api/emprestimos/${id}/devolver`, {
-      method: "put",
+      method: "PUT",  // Corrigido para PUT maiúsculo
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log("Resposta do fetch:", res);
 
     if (!res.ok) throw new Error("Erro ao marcar devolução");
 
+    alert("Devolução registrada com sucesso!");
     carregarEmprestimos();
   } catch (err) {
     alert("Erro ao marcar devolução.");
     console.error(err);
   }
 }
-
